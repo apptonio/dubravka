@@ -1,0 +1,73 @@
+name: dubravka
+description: A medical application powered by ChatGPT.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_picker: ^0.8.7+5
+  http:
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  google_ml_kit: ^0.14.0
+  connectivity_plus: ^4.0.1
+  device_info_plus:
+  flutter_screenutil:
+  flutter_svg:
+  get:
+  get_storage:
+  intl:
+  package_info_plus:
+  url_launcher:
+  flutter_form_builder: ^9.0.0
+  form_builder_validators: ^9.0.0
+  animate_do: ^3.0.2
+  google_nav_bar: ^5.0.6
+  accordion: ^2.5.1
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner:
+  flutter_launcher_icons:
+  flutter_native_splash:
+  flutter_lints: ^2.0.0
+
+#dependency_overrides:
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/appIcon.jpeg"
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/icons/appIcon.jpeg
+  web: false
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icons/
+    - assets/images/
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Montserrat/Montserrat-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Montserrat/Montserrat-Light.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Medium.ttf
