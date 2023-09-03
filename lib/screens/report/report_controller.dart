@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dubravka/constants/api_key.dart';
 import 'package:dubravka/controllers/loading_controller.dart';
 import 'package:dubravka/controllers/user_controller.dart';
 import 'package:dubravka/data/models/user.dart';
@@ -16,7 +17,7 @@ class ReportController extends GetxController {
   RxString greeting = ''.obs;
   final RxList<Map<String, dynamic>> messages = <Map<String, dynamic>>[].obs;
   final TextEditingController textEditingController = TextEditingController();
-  final apiKey = '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';
+  final apiKey = APIkey().apiKey;
   RxString userReport = 'The report will appear here.'.obs;
   final url = Uri.https("api.openai.com", "/v1/chat/completions");
 

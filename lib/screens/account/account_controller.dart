@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:animate_do/animate_do.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dubravka/constants/api_key.dart';
 import 'package:dubravka/constants/colors.dart';
 import 'package:dubravka/constants/pages.dart';
 import 'package:dubravka/controllers/loading_controller.dart';
@@ -28,7 +29,7 @@ class AccountController extends GetxController {
   final dobFocusNode = FocusNode().obs;
   final sexFocusNode = FocusNode().obs;
   final ImagePicker _picker = ImagePicker();
-  final apiKey = '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';
+  final apiKey = APIkey().apiKey;
 
   String? firstName = '';
   String? lastName = '';
