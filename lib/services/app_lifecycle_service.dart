@@ -13,4 +13,8 @@ class AppLifecycleService extends FullLifeCycleController
 
   @override
   void onResumed() {}
+  
+  @override
+  void onHidden() {
+  }
 }

@@ -27,6 +27,7 @@ class MyDropdownTextfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderDropdown(
+      
       autovalidateMode: AutovalidateMode.onUserInteraction,
       initialValue: initialValue,
       onChanged: (_) => onChanged,
@@ -44,10 +45,12 @@ class MyDropdownTextfield extends StatelessWidget {
                 child: Icon(iconData),
               )
             : null,
-        contentPadding: EdgeInsets.fromLTRB(
-            20, iconData != null ? 10 : 0, 10, iconData != null ? 10 : 0),
-        // EdgeInsets.symmetric(
-        //     horizontal: 10.w, vertical: iconData != null ? 20.h : 0),
+        prefixIconColor: MyColors.themeLight,
+        // prefixIconConstraints: iconData != null
+        //     ? BoxConstraints(minWidth: 40.w)
+        //     : const BoxConstraints(minWidth: 0, maxWidth: 0),
+        contentPadding: EdgeInsets.symmetric(
+            horizontal: 20.w, vertical: iconData != null ? 20.h : 0),
         enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(100)),
             borderSide: BorderSide(color: Colors.black12)),

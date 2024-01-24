@@ -28,6 +28,7 @@ class AccountController extends GetxController {
   final lastNameFocusNode = FocusNode().obs;
   final dobFocusNode = FocusNode().obs;
   final sexFocusNode = FocusNode().obs;
+  final raceFocusNode = FocusNode().obs;
   final ImagePicker _picker = ImagePicker();
   final apiKey = APIkey().apiKey;
 
@@ -35,6 +36,7 @@ class AccountController extends GetxController {
   String? lastName = '';
   DateTime dob = DateTime.now();
   String gender = '';
+  String race = '';
 
   final LoadingController loadingController = Get.find<LoadingController>();
   final UserController userController = Get.find<UserController>();
@@ -58,6 +60,7 @@ class AccountController extends GetxController {
     lastNameFocusNode.value.dispose();
     dobFocusNode.value.dispose();
     sexFocusNode.value.dispose();
+    raceFocusNode.value.dispose();
   }
 
   void saveInitialUserData() async {
@@ -75,12 +78,14 @@ class AccountController extends GetxController {
 
       dob = formKey.value.currentState?.fields['dob']?.value;
       gender = formKey.value.currentState?.fields['gender']?.value;
+      race = formKey.value.currentState?.fields['race']?.value;
 
       User user = User(
         firstName: firstName ?? '',
         lastName: lastName ?? '',
         dob: dob,
         gender: gender,
+        race: race,
       );
 
       userController.saveUser(user);
@@ -212,6 +217,7 @@ class AccountController extends GetxController {
     }
   }
 
+  // ignore: unused_element
   Future<void> _extractTextFromImage() async {
     final inputImage = InputImage.fromFile(_image!);
     final textDetector = GoogleMlKit.vision.textRecognizer();
@@ -279,8 +285,8 @@ class AccountController extends GetxController {
     userController.potentialAllergies.value = await chatGPT(
         'Return patients medicinal allergies separated by commas.');
 
-    userController.potentialFamilyIllnesses.value =
-        await chatGPT('Return patients family illnesses separated by commas.');
+    userController.potentialDiagnosis.value =
+        await chatGPT('Return patients diagnosis.');
   }
 
   Future<String> chatGPT(String prompt) async {
@@ -308,7 +314,6 @@ class AccountController extends GetxController {
             jsonDecode(utf8.decode(responseBody.runes.toList()));
 
         final content = decodedResponse['choices'][0]['message']['content'];
-        print(content);
 
         potentialMessages.add({
           'role': 'assistant',
@@ -328,7 +333,6 @@ class AccountController extends GetxController {
         'role': 'assistant',
         'content': e.toString(),
       });
-      print(e);
       return '';
     }
   }
@@ -338,6 +342,7 @@ class AccountController extends GetxController {
     lastNameFocusNode.value.unfocus();
     dobFocusNode.value.unfocus();
     sexFocusNode.value.unfocus();
+    raceFocusNode.value.unfocus();
   }
 
   void launchMyUrlOnTap({required String endpoint}) async {

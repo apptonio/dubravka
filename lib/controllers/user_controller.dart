@@ -1,4 +1,5 @@
 import 'package:dubravka/data/models/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,7 @@ class UserController extends GetxController {
   final RxBool potentialDrinker = false.obs;
   final RxString potentialMedicines = ''.obs;
   final RxString potentialAllergies = ''.obs;
-  final RxString potentialFamilyIllnesses = ''.obs;
+  final RxString potentialDiagnosis = ''.obs;
   final RxBool potentialCovid = false.obs;
   final RxString potentialShots = '0'.obs;
 
@@ -33,7 +34,9 @@ class UserController extends GetxController {
     final keys = box.keys;
     for (var key in keys) {
       final user = box.get(key);
-      print(user);
+      if (kDebugMode) {
+        print(user);
+      }
     }
   }
 }

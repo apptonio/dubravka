@@ -6,7 +6,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -30,6 +30,7 @@ dependencies:
   animate_do: ^3.0.2
   google_nav_bar: ^5.0.6
   accordion: ^2.5.1
+  chat_gpt_flutter: ^1.0.16
 
   cupertino_icons: ^1.0.2
 

@@ -11,17 +11,13 @@ class UserAdapter extends TypeAdapter<User> {
     final lastName = reader.readString();
     final dob = reader.read() as DateTime;
     final gender = reader.readString();
+    final race = reader.readString();
     final illnessesLength = reader.readInt();
     final illnesses = List<Illness>.generate(
       illnessesLength,
-      (_) =>
-          Illness(name: reader.readString(), date: reader.read() as DateTime),
+      (_) => Illness(name: reader.readString(), time: reader.readString()),
     );
-    final familyIllnessesLength = reader.readInt();
-    final familyIllnesses = List<String>.generate(
-      familyIllnessesLength,
-      (_) => reader.readString(),
-    );
+    final diagnosis = reader.readString();
     final hasCovidInfo = reader.readBool();
     final covidInfo = hasCovidInfo
         ? Covid(hadCovid: reader.readBool(), numOfShots: reader.readInt())
@@ -39,8 +35,9 @@ class UserAdapter extends TypeAdapter<User> {
       lastName: lastName,
       dob: dob,
       gender: gender,
+      race: race,
       illnesses: illnesses,
-      familyIllnesses: familyIllnesses,
+      diagnosis: diagnosis,
       covidInfo: covidInfo,
       meds: meds,
       allergies: allergies,
@@ -55,18 +52,18 @@ class UserAdapter extends TypeAdapter<User> {
     writer.writeString(obj.lastName);
     writer.write(obj.dob);
     writer.writeString(obj.gender);
+    writer.writeString(obj.race);
     writer.writeInt(obj.illnesses?.length ?? 0);
     obj.illnesses?.forEach((illness) {
       writer.writeString(illness.name);
-      writer.write(illness.date);
+      writer.writeString(illness.time ?? '');
     });
     writer.writeBool(obj.covidInfo != null);
     if (obj.covidInfo != null) {
       writer.writeBool(obj.covidInfo!.hadCovid);
       writer.writeInt(obj.covidInfo!.numOfShots);
     }
-    writer.writeInt(obj.familyIllnesses?.length ?? 0);
-    obj.familyIllnesses?.forEach(writer.writeString);
+    writer.writeString(obj.diagnosis ?? '');
     writer.writeInt(obj.meds?.length ?? 0);
     obj.meds?.forEach(writer.writeString);
     writer.writeInt(obj.allergies?.length ?? 0);

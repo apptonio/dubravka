@@ -8,6 +8,7 @@ class LoadingController extends GetxController {
   void showLoadingDialog() {
     isLoading.value = true;
     Get.dialog(
+        // ignore: deprecated_member_use
         WillPopScope(
           onWillPop: () async => false,
           child: const AlertDialog(

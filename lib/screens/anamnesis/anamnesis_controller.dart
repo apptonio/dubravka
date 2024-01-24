@@ -15,7 +15,7 @@ class AnamnesisController extends GetxController {
   Rxn<User> currentUser = Rxn<User>();
   final formKey = GlobalKey<FormBuilderState>().obs;
 
-  final familyIllnessesFocusNode = FocusNode().obs;
+  final diagnosisFocusNode = FocusNode().obs;
   final hadCovidFocusNode = FocusNode().obs;
   final vaccinationsFocusNode = FocusNode().obs;
   final medicinesFocusNode = FocusNode().obs;
@@ -28,7 +28,7 @@ class AnamnesisController extends GetxController {
   RxBool medicinesMoreInfo = false.obs;
   RxBool allergiesMoreInfo = false.obs;
   RxList<Illness> illnesses = <Illness>[].obs;
-  RxList<Illness> familyIllnesses = <Illness>[].obs;
+  RxString diagnosis = ''.obs;
 
   @override
   void onInit() async {
@@ -41,7 +41,7 @@ class AnamnesisController extends GetxController {
   }
 
   void addIllness() {
-    illnesses.add(Illness(name: '', date: DateTime.now()));
+    illnesses.add(Illness(name: '', time: ''));
   }
 
   void removeIllness(int index) {
@@ -83,7 +83,7 @@ class AnamnesisController extends GetxController {
       for (int i = 0; i < illnesses.length; i++) {
         Illness illness = Illness(
             name: formKey.value.currentState?.fields['name$i']?.value ?? '',
-            date: formKey.value.currentState?.fields['date$i']?.value);
+            time: formKey.value.currentState?.fields['time$i']?.value);
         userIllnesses.add(illness);
       }
       Covid covidInfo = Covid(
@@ -92,12 +92,8 @@ class AnamnesisController extends GetxController {
           numOfShots: int.parse(
               formKey.value.currentState?.fields['numOfShots']?.value ?? '0'));
 
-      List<String> familyIllnesses = (formKey.value.currentState
-                  ?.fields['familyIllnesses']?.value as String?)
-              ?.split(',')
-              .map((e) => e.trim())
-              .toList() ??
-          [];
+      String diagnosis =
+          formKey.value.currentState?.fields['diagnosis']?.value ?? '';
 
       List<String> medicines =
           (formKey.value.currentState?.fields['medicines']?.value as String?)
@@ -122,8 +118,9 @@ class AnamnesisController extends GetxController {
         lastName: currentUser.value!.lastName,
         dob: currentUser.value!.dob,
         gender: currentUser.value!.gender,
+        race: currentUser.value!.race,
         illnesses: userIllnesses,
-        familyIllnesses: familyIllnesses,
+        diagnosis: diagnosis,
         covidInfo: covidInfo,
         meds: medicines,
         allergies: allergies,

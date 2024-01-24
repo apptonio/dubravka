@@ -22,13 +22,13 @@ class ReportScreen extends GetView<ReportController> {
         behavior: HitTestBehavior.translucent,
         onTap: () {},
         child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 16.h),
-                Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 16.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Row(
                   children: [
                     Expanded(
                       child: Column(
@@ -50,13 +50,16 @@ class ReportScreen extends GetView<ReportController> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10.h),
-                Align(
+              ),
+              SizedBox(height: 10.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Align(
                   alignment: Alignment.centerLeft,
                   child: BounceInDown(
                     delay: const Duration(milliseconds: 200),
                     child: Text(
-                      'Generate a personal report for your doctor below.',
+                      'Patient report (summary).',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 18.sp)
@@ -64,8 +67,27 @@ class ReportScreen extends GetView<ReportController> {
                     ),
                   ),
                 ),
-                SizedBox(height: 32.h),
-                Flexible(
+              ),
+              BounceInDown(
+                delay: const Duration(milliseconds: 200),
+                child: Container(
+                  height: 16.h,
+                  decoration: BoxDecoration(
+                    color: MyColors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: MyColors.black.withOpacity(0.06),
+                        offset: const Offset(0, 6),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
                   child: BounceInDown(
                     delay: const Duration(milliseconds: 200),
                     child: SingleChildScrollView(
@@ -96,9 +118,8 @@ class ReportScreen extends GetView<ReportController> {
                     ),
                   ),
                 ),
-                SizedBox(height: 32.h),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

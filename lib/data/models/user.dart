@@ -3,8 +3,9 @@ class User {
   final String lastName;
   final DateTime dob;
   final String gender;
+  final String race;
   final List<Illness>? illnesses;
-  final List<String>? familyIllnesses;
+  final String? diagnosis;
   final Covid? covidInfo;
   final List<String>? meds;
   final List<String>? allergies;
@@ -16,8 +17,9 @@ class User {
     required this.lastName,
     required this.dob,
     required this.gender,
+    required this.race,
     this.illnesses,
-    this.familyIllnesses,
+    this.diagnosis,
     this.covidInfo,
     this.meds,
     this.allergies,
@@ -27,8 +29,8 @@ class User {
 
   @override
   String toString() {
-    return 'User: { firstName: $firstName, lastName: $lastName, dob: $dob, gender: $gender, '
-        'illnesses: $illnesses, familyIllnesses: $familyIllnesses, '
+    return 'User: { firstName: $firstName, lastName: $lastName, dob: $dob, sex: $gender, race: $race, '
+        'illnesses: $illnesses, diagnosis: $diagnosis, '
         'covidInfo: $covidInfo, meds: $meds, allergies: $allergies, '
         'isSmoking: $isSmoking, isDrinking: $isDrinking }';
   }
@@ -36,13 +38,13 @@ class User {
 
 class Illness {
   String name;
-  DateTime date;
+  String? time;
 
-  Illness({required this.name, required this.date});
+  Illness({required this.name, this.time});
 
   @override
   String toString() {
-    return 'Illness: { name: $name, date: $date }';
+    return 'Illness: { name: $name, time: $time }';
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
 import 'package:dubravka/constants/api_key.dart';
 import 'package:dubravka/controllers/loading_controller.dart';
 import 'package:dubravka/controllers/user_controller.dart';
@@ -15,11 +16,11 @@ class ChatController extends GetxController {
   final LoadingController loadingController = Get.find<LoadingController>();
   RxString greeting = ''.obs;
   Rxn<User> user = Rxn<User>();
-  final RxList<Map<String, dynamic>> messages = <Map<String, dynamic>>[].obs;
   final TextEditingController textEditingController = TextEditingController();
   final apiKey = APIkey().apiKey;
   final url = Uri.https("api.openai.com", "/v1/chat/completions");
   RxString myVar = ''.obs;
+  final RxList<Message> messages = <Message>[].obs;
 
   late ScrollController scrollController;
 
@@ -30,14 +31,13 @@ class ChatController extends GetxController {
     getGreeting();
 
     await getUserData();
-    //a
 
-    messages.add({
-      'role': 'assistant',
-      'content':
-          'Hi! In case you have any questions regarding diet, therapy or your disease, following your doctors appointment, feel free to ask. Please keep in mind that I am just an assistant, and not a replacement for doctor consultations.'
-      //'Pozdrav! Ukoliko imate popratna pitanja nakon pregleda liječnika koja su vezana za prehranu, terapiju ili vašu bolest, slobodno me pitajte. Imajte na umu da sam ja samo pomoćnik, a ne zamjena za konzultacije s liječnikom.'
-    });
+    messages.add(Message(
+        role: 'assistant',
+        content:
+            'Hi! In case you have any questions regarding diet, therapy or your disease, following your doctors appointment, feel free to ask. Please keep in mind that I am just an assistant, and not a replacement for doctor consultations.'));
+    //'Pozdrav! Ukoliko imate popratna pitanja nakon pregleda liječnika koja su vezana za prehranu, terapiju ili vašu bolest, slobodno me pitajte. Imajte na umu da sam ja samo pomoćnik, a ne zamjena za konzultacije s liječnikom.'
+
     super.onInit();
   }
 
@@ -55,37 +55,35 @@ class ChatController extends GetxController {
     for (var i = 0; i < illnesses.length; i++) {
       Illness currentIllness = illnesses[i];
       String illnessName = currentIllness.name;
-      String illnessDate = currentIllness.date.toString();
+      String illnessDate = currentIllness.time ?? 'not stated how long.';
       allIllnesses +=
-          'Pacijent boluje od $illnessName + " i dijagnosticirana je $illnessDate, ';
+          'Pacient suffers from $illnessName + " and it was $illnessDate, ';
     }
 
     Covid? covid = userController.currentUser.value!.covidInfo;
     String? hadCovid = covid!.hadCovid
-        ? 'Pacijent je prebolio COVID-19'
-        : 'Pacijent nije imao COVID-19';
+        ? 'Patient had COVID-19'
+        : 'Patient did not have COVID-19';
     String? numOfShots =
-        'Pacijent je primio ${covid.numOfShots} cjepiva protiv COVID-19';
+        'Pacient has received ${covid.numOfShots} COVID-19 shots';
 
-    List<String>? familyIllnesses =
-        userController.currentUser.value!.familyIllnesses;
+    String? diagnosis = userController.currentUser.value!.diagnosis ?? '';
     List<String>? medicines = userController.currentUser.value!.meds;
     List<String>? allergies = userController.currentUser.value!.allergies;
     bool? isSmoker = userController.currentUser.value!.isSmoking;
-    String? smoking = isSmoker! ? 'Pacijent je pušač.' : 'Pacijent je nepušač.';
+    String? smoking =
+        isSmoker! ? 'Pacient is a smoker.' : 'Pacijent is not a smoker.';
     bool? isDrinker = userController.currentUser.value!.isDrinking;
-    String? drinking =
-        isDrinker! ? 'Pacijent pije alkohol' : 'Pacijent ne pije alkohol';
+    String? drinking = isDrinker!
+        ? 'Pacient drinks alcohol.'
+        : 'Pacient does not drink alcohol';
     String? total =
-        '$firstName $lastName, $dob, spol: $gender, $allIllnesses, Lista obiteljskih bolesti podjeljenjih zarezom: $familyIllnesses, $hadCovid, $numOfShots, Lista lijekova koje uzima pacijent odvojene zarezom: $medicines . Lista alergija koju pacijent ima odvojene zarezom: $allergies. $smoking, $drinking';
-
-    //String? prompt =
-    //  'Predpostavi da si liječnik, te koristi medicinske podatke o pacijentu: \n\n $total.\n\n Koristi ove podatke da sažeto odgovoriš na pitanja pacijenta najbolje što možeš. Odgovore baziraj na danim medicinskim podacima.';
+        '$firstName $lastName, $dob, sex: $gender, $allIllnesses, diagnosis: $diagnosis, $hadCovid, $numOfShots, List of prescribed drugs the patient takes: $medicines . List of allergies the patient has: $allergies. $smoking, $drinking';
 
     String? prompt =
-        'Assume you are a doctor, and use the this pacient data: \n\n $total.\n\n Use this data to concisely answer the pacients questions to the best of your ability. Base your replies on the provided medical data.';
+        'Assume that you are a virtual medical assistant, and use the this pacient data: \n\n $total.\n\n Use this data to concisely answer the pacients questions to the best of your ability, taking into account the patients medical history and the drugs they are currently using, indicating the potential sideeffects of the drugs they are using. In your reply, make a reference to this patient data.';
 
-    messages.add({'role': 'assistant', 'content': prompt});
+    messages.add(Message(role: 'assistant', content: prompt));
   }
 
   void getGreeting() {
@@ -109,44 +107,39 @@ class ChatController extends GetxController {
     }
     textEditingController.clear();
 
-    // loadingController.showLoadingDialog();
+    loadingController.showLoadingDialog();
 
-    messages.add({
-      'role': 'user',
-      'content': prompt,
-    });
+    messages.add(Message(role: 'user', content: prompt));
 
     scrollToBottom();
 
     try {
-      final stream = sendMessageStream();
+      final chatGpt = ChatGpt(apiKey: apiKey);
 
-      final savedValue = myVar.value; // Save the current value of myVar
+      final testRequest = ChatCompletionRequest(
+          messages: messages,
+          model: ChatGptModel.gpt35Turbo.modelName,
+          maxTokens: 1000);
 
-      myVar.value = ''; // Clear myVar
+      final result = await chatGpt.createChatCompletion(testRequest);
 
-      messages.add({
-        'role': 'assistant',
-        'content': savedValue, // Add the saved value as a message
-      });
+      myVar.value = result!.choices![0].message!.content;
 
-      await for (final textChunk in stream) {
-        myVar.value += textChunk;
-      }
+      final savedValue = myVar.value;
 
-      print(myVar.value);
+      messages.add(Message(role: 'assistant', content: savedValue));
     } catch (exception) {
       Get.snackbar('Error', 'An error has occured.',
           snackPosition: SnackPosition.BOTTOM);
+      loadingController.hideLoadingDialog();
       return;
     }
 
-    // loadingController.hideLoadingDialog();
+    loadingController.hideLoadingDialog();
+
     messages.removeLast();
-    messages.add({
-      'role': 'assistant',
-      'content': myVar.value,
-    });
+    messages.add(Message(role: 'assistant', content: myVar.value));
+
     scrollToBottom();
   }
 

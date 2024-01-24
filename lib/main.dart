@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
           initialBinding: InitialBinding(),
           theme: theme,
           getPages: pages,
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: true,
           locale: Localization.locale,
           fallbackLocale: Localization.fallbackLocale,
           translations: Localization(),
